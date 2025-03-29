@@ -60,36 +60,49 @@ Step 2: Normalize to 2NF (Remove partial dependencies by separating the data int
 
 ### 3. Third Normal Form (3NF)
 
-- Must satisfy 2NF.
-- No transitive dependencies (non-key columns shouldn’t depend on other non-key columns).
+Step 1: Create the Unnormalized Table (UNF)
+We'll create a table university where some columns contain multiple values in a single row (violating 1NF).
 
-![university data unnormalized](./assets/university-3nf.png)
+![university table  unnormalized](./assets/unnorm%20-3nf.png)
 
-first normalization.
+Step 2: Normalize to First Normal Form (1NF)
+Rule: Each column must contain atomic values (no multiple values in one cell).
 
-![university data 1NF normalized](./assets/univ-1nf.png)
+![university table 1NF normalized](./assets/univ-1nf(3NF).png)
 
-second normalization -  we create the students table (stores student information). courses table (stores course and instructor information) and student_courses table (tracks which student is enrolled in which course, and their grade):
+Step 3: Normalize to Second Normal Form (2NF)
+Rule: Remove partial dependencies (columns should depend on the full primary key).
 
-- student- table: stores student information
+- Create a students table to store student details separately.
 
-![student 2NF normalized](./assets/students-3nf.png)
+![university table 1NF normalized](./assets/student-3nf.png)
 
-- courses -table: stores course and instructor information
+- Create a courses table to store course and instructor details separately.
 
-![courses 2NF normalized](./assets/courses-3nf.png)
+![university table 1NF normalized](./assets/courses-3nf.png)
 
-- student_courses table: tracks which student is enrolled in which course, and their grade
+- Create a student_courses table to represent the many-to-many relationship.
 
-![student-courses 2NF normalized](./assets/student-course-3nf.png)
+![university table 1NF normalized](./assets/student_courses-3nf.png)
 
-third normalizations - To move to 3NF, we need to remove transitive dependencies. In this case, the department column should not be in the students table because it is dependent on the student_id, and we don't want to store it redundantly.  
-Create the departments table (stores department information)
+Step 4: Normalize to Third Normal Form (3NF)
+Rule: Remove transitive dependencies (a non-key column should not depend on another non-key column).
 
-![departments normalized](./assets/depatments.png)
-and Modify the students table (remove department column from students and link it to departments)
+- Create a departments table to store department details separately.
 
-## When to Stop Normalizing?
+![university table 1NF normalized](./assets/departments(3nf).png)
 
-- Over-normalization can make queries slower (due to joins).  
-- Balance between redundancy and performance.
+- Update students Table to Include department_id
+Since we removed the department column and replaced it with department_id, we insert the updated records.
+
+Final Database Schema (3NF)  
+Now, the database follows 3NF and is properly structured:  
+
+    students (student_id, student_name, department_id)
+    departments (department_id, department_name)
+    courses (course_id, course_name, instructor)
+    student_courses (student_id, course_id, grade)
+
+This structure eliminates redundancy, prevents anomalies, and improves data integrity.
+
+>The same procedure is followed for 4nf, 5nf etc ..
